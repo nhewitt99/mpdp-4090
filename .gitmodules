@@ -1,0 +1,3 @@
+[submodule "FCRN-DepthPrediction"]
+	path = FCRN-DepthPrediction
+	url = https://github.com/nhewitt99/FCRN-DepthPrediction.git
