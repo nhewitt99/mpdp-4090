@@ -11,6 +11,14 @@ specified to only run the projection on certain regions of interest
 import numpy as np
 import open3d as o3d # Optional, can comment out this and visualize() if open3d is not installed.
 
+colors = [[1,0,0],
+          [0,1,0],
+          [0,0,1],
+          [1,1,0],
+          [1,0,1],
+          [0,1,1],
+          [1,1,1]]
+
 class Projector:
     def __init__(self, camera_mtx):
         self.camera_mtx = camera_mtx
@@ -130,10 +138,14 @@ class Projector:
             objects.append(frame)
             
         if circle_points is not None:
+            i = 0
             for point in circle_points:
                 mesh_sphere = o3d.geometry.create_mesh_sphere(radius=0.1)
                 mesh_sphere.compute_vertex_normals()
-                mesh_sphere.paint_uniform_color([1.0, 1.0, 0.0])
+                mesh_sphere.paint_uniform_color(colors[i])
+                i += 1
+                
+                point = tuple(point)
                 mesh_sphere.translate(point)
                 objects.append(mesh_sphere)
                 

@@ -18,6 +18,7 @@ import pickle
 from PIL import Image
 
 import numpy as np
+import scipy
 
 
 # Median absolute deviation outlier detection, one-dimensional
@@ -32,7 +33,7 @@ def outlier_detection(points, thresh=2.0):
 
 
 def main():
-    img = Image.open('src/test-me.jpg')
+    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/4-5.jpg')
     width, height = img.size
     
     calibration = pickle.load(open('src/calibration.pickle', 'rb'))
@@ -76,9 +77,19 @@ def main():
             
         # Find the object's average point
         thiscenter = np.mean(XYZ, axis=0)
-        centerpoints.append(tuple(thiscenter))
+        centerpoints.append(thiscenter)
         
     point_projector.visualize(totalrgb, totalXYZ, centerpoints, axes=True)
+    
+    # Calculate pairwise distances
+    dists = scipy.spatial.distance.pdist(np.vstack(centerpoints))
+    dists = scipy.spatial.distance.squareform(dists)
+    
+    # Calculate distances from camera
+    for idx, point in enumerate(centerpoints):
+        dists[idx,idx] = np.linalg.norm(point)
+    
+    print(dists)
     
     
 if __name__=='__main__':
