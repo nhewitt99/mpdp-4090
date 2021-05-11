@@ -122,11 +122,26 @@ class Projector:
     XYZ: np.array of world-frame points
     axes: boolean to add an axis indicator
     '''
-    def visualize(self, rgb, XYZ, axes = False):
+    def visualize(self, rgb, XYZ, circle_points = None, axes = False):
+        objects = []
+        
         if axes:
-            rgb, XYZ = self.addAxes(rgb, XYZ)
+            frame = o3d.geometry.create_mesh_coordinate_frame(0.5)
+            objects.append(frame)
+            
+        if circle_points is not None:
+            for point in circle_points:
+                mesh_sphere = o3d.geometry.create_mesh_sphere(radius=0.1)
+                mesh_sphere.compute_vertex_normals()
+                mesh_sphere.paint_uniform_color([1.0, 1.0, 0.0])
+                mesh_sphere.translate(point)
+                objects.append(mesh_sphere)
+                
         
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(XYZ)
         pcd.colors = o3d.utility.Vector3dVector(rgb)
-        o3d.visualization.draw_geometries([pcd])
+        objects.append(pcd)
+        
+        
+        o3d.visualization.draw_geometries(objects)
