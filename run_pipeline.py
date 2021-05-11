@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from Depthstimator import Depthstimator
 from Segmentor import SamplingSegmentor
-from HumanSegmentor import HumanSegmentor
+from HumanSegmentor import EfficientHRNetSegmentor, resnetSegmentor
 from Projector import Projector
 
 import pickle
@@ -27,8 +27,9 @@ def main():
     
     depth_estimator = Depthstimator((height, width))
     
-    # segmentor = HumanSegmentor((height, width))
-    segmentor = SamplingSegmentor((height, width), 0.125)
+    segmentor = resnetSegmentor((height, width))
+    # segmentor = EfficientHRNetSegmentor((height, width))
+    # segmentor = SamplingSegmentor((height, width), 0.125)
     
     point_projector = Projector(camera_mtx)
     
