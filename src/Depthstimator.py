@@ -48,6 +48,7 @@ class Depthstimator:
     
         # Construct the network
         self.net = models.ResNet50UpProj({'data': self.input_node}, batch_size, 1, False)
+        tf.get_variable_scope().reuse_variables()
         
         self.sess = tf.Session()
         
