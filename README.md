@@ -24,7 +24,7 @@ This is optional: without EHRNet, you can use the torchvision ResNet segmentor i
 I don't know if EfficientHRNet's segmentation implementation has been open-sourced, so it's not included in this repo. There is a placeholder for it at `src/human_seg/EfficientSegNet`. Simply copy in the EfficientSegNet code there, **and copy the seg_config.yaml to that folder**.  Modify the config as needed. I feel like there's another line somewhere that needs to be changed, but can't find it now-- please update this README if you run into an issue and solve it.
 
 ### Calibration
-Make a folder somewhere holding only your 9x6 OpenCV checkerboard calibration images. Then, run `python src/calibrate.py /the/path/to/your/checkerboard/imgs/*`. This should create a pickle file encoding your camera's calibration. Make sure it is saved in the `src` directory.
+Make a folder somewhere holding only your 9x6 OpenCV checkerboard calibration images. Then, run `python src/calibrate.py "/the/path/to/your/checkerboard/imgs/*"`. This should create a pickle file encoding your camera's calibration. Make sure it is saved in the `src` directory.
 
 ### Run Test
 To run this on one image, modify the first line of `main` in `run_pipeline.py` (I've been too busy to parametrize this yet). By default, it should segment for people. A visualization will appear with each person's pixels placed in 3D space, a coordinate frame at the camera's origin, and a colored sphere marking the center point of each person. You can use the mouse to pan and inspect it. Press q or the close button once done. 
