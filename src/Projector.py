@@ -157,11 +157,11 @@ class Projector:
                 mesh_sphere.translate(point)
                 objects.append(mesh_sphere)
                 
-        
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(XYZ)
-        pcd.colors = o3d.utility.Vector3dVector(rgb)
-        objects.append(pcd)
+        if XYZ is not None:
+            pcd = o3d.geometry.PointCloud()
+            pcd.points = o3d.utility.Vector3dVector(XYZ)
+            pcd.colors = o3d.utility.Vector3dVector(rgb)
+            objects.append(pcd)
         
         
         o3d.visualization.draw_geometries(objects)

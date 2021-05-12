@@ -34,7 +34,7 @@ def outlier_detection(points, thresh=2.0):
 
 
 def main():
-    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/1-2-5.jpg')
+    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/1-2.jpg')
     width, height = img.size
     
     calibration = pickle.load(open('src/calibration.pickle', 'rb'))
@@ -84,8 +84,11 @@ def main():
         centerpoints.append(thiscenter)
     
     # Calculate pairwise distances
-    dists = scipy.spatial.distance.pdist(np.vstack(centerpoints))
-    dists = scipy.spatial.distance.squareform(dists)
+    if len(centerpoints) > 0:
+        dists = scipy.spatial.distance.pdist(np.vstack(centerpoints))
+        dists = scipy.spatial.distance.squareform(dists)
+    else:
+        dists = [[]]
     
     # Calculate distances from camera
     for idx, point in enumerate(centerpoints):
