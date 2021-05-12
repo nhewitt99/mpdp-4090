@@ -23,7 +23,7 @@ This is optional: without EHRNet, you can use the torchvision ResNet segmentor i
 
 I don't know if EfficientHRNet's segmentation implementation has been open-sourced, so it's not included in this repo. There is a placeholder for it at `src/human_seg/EfficientSegNet`. Simply copy in the EfficientSegNet code there, **and copy the seg_config.yaml to that folder**.  Modify the config as needed. I feel like there's another line somewhere that needs to be changed, but can't find it now-- please update this README if you run into an issue and solve it.
 
-# FastDepth Configuration
+### FastDepth Configuration
 FastDepth's checkpoint must be downloaded to the `src/cfg` folder. Run the following:
 
 `cd src/cfg; wget http://datasets.lids.mit.edu/fastdepth/results/mobilenet-nnconv5dw-skipadd-pruned.pth.tar; cd ../..`
