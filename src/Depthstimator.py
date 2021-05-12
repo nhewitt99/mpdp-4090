@@ -19,6 +19,7 @@ import numpy as np
 from skimage.transform import resize
 
 from matplotlib import pyplot as plt
+from time import time
 
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__),
@@ -62,7 +63,11 @@ class Depthstimator:
             inp = inp.cuda()
         
         # Run net and convert results to numpy
+        t = time()
         out = self.model(inp).detach()
+        t = time() - t
+        print(f'Depth model time: {t}')
+        
         if self.cuda:
             out = out.cpu()
         out = out.numpy()

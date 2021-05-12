@@ -96,7 +96,15 @@ class Projector:
         c_y = self.camera_mtx[1,2]
         
         # Project each point
-        XYZ = np.apply_along_axis(self.projectOnce, 1, xyd, f_x, f_y, c_x, c_y)
+        Z = xyd[:,2]
+        X = (xyd[:,0] - c_x) * Z / f_x
+        Y = (xyd[:,1] - c_y) * Z / f_y
+        
+        X = np.expand_dims(X,0).transpose()
+        Y = np.expand_dims(Y,0).transpose()
+        Z = np.expand_dims(Z,0).transpose()
+        
+        XYZ = np.hstack((X,Y,Z))
         
         return XYZ
 

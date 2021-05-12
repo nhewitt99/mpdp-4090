@@ -18,6 +18,8 @@ import cv2
 import numpy as np
 from scipy import ndimage
 
+from time import time
+
 from Segmentor import Segmentor
 
 class EfficientHRNetSegmentor(Segmentor):
@@ -64,7 +66,10 @@ class resnetSegmentor(Segmentor):
         if self.cuda:
             inp = inp.cuda()
         
+        t = time()
         out = self.fcn(inp)['out']
+        t = time() - t
+        print(f'Segment model time: {t}')
         
         classes = torch.argmax(out.squeeze(), dim=0).detach()
         if self.cuda:
