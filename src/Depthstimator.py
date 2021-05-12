@@ -24,7 +24,6 @@ from time import time
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__),
                              os.pardir, 'fast-depth'))
-print(sys.path)
 
 
 class Depthstimator:
@@ -89,7 +88,7 @@ class Depthstimator:
     
     
     def test(self):
-        img = Image.open('test.jpg')
+        img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/1-2.jpg')
         pred = self.predict(img)
         
         fig = plt.figure()

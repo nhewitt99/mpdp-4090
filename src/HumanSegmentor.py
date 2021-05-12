@@ -38,7 +38,7 @@ class EfficientHRNetSegmentor(Segmentor):
         return self.si.processFramePIL(image)
     
     
-class resnetSegmentor(Segmentor):
+class ResnetSegmentor(Segmentor):
     def __init__(self, image_shape, resize_to=256, prune_threshold=1000, cuda=True):
         self.cuda = cuda
         self.fcn = models.segmentation.fcn_resnet101(pretrained=True)
@@ -85,7 +85,8 @@ class resnetSegmentor(Segmentor):
         # Resize up to 2d mask where humans are 1 and all else 0
         mask = np.zeros((classes.shape[0], classes.shape[1],3), dtype=np.uint8)
         mask[humanpix] = [1,1,1]
-        mask = cv2.resize(mask, (self.width, self.height) , interpolation=cv2.INTER_NEAREST)        
+        mask = cv2.resize(mask, (self.width, self.height) , interpolation=cv2.INTER_NEAREST)
+        
         mask = mask[:,:,0]
         
         # Split into unique occurrences
