@@ -49,7 +49,9 @@ class Depthstimator:
         self.model.eval()
         
         if self.cuda:
-            self.model.cuda()
+            self.model = self.model.cuda()
+        else:
+            self.model = self.model.cpu()
         
         # Create a transform for the input image
         self.trf = T.Compose([T.Resize((224,224)),
@@ -61,6 +63,8 @@ class Depthstimator:
         inp = self.trf(img).unsqueeze(0)
         if self.cuda:
             inp = inp.cuda()
+        else:
+            inp = inp.cpu()
         
         # Run net and convert results to numpy
         t = time()

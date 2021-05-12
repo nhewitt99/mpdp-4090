@@ -16,6 +16,7 @@ from Projector import Projector
 
 import pickle
 from PIL import Image
+from time import time
 
 import numpy as np
 import scipy
@@ -46,6 +47,8 @@ def main():
     # segmentor = SamplingSegmentor((height, width), 0.25)
     
     point_projector = Projector(camera_mtx)
+    
+    t = time()
     
     depth = depth_estimator.predict(img)
     pixels_of_interest = segmentor.segment(img)
@@ -79,8 +82,6 @@ def main():
         thiscenter = np.mean(XYZ, axis=0)
         thiscenter[1] = 0
         centerpoints.append(thiscenter)
-        
-    point_projector.visualize(totalrgb, totalXYZ, circle_points=centerpoints, axes=True)
     
     # Calculate pairwise distances
     dists = scipy.spatial.distance.pdist(np.vstack(centerpoints))
@@ -89,8 +90,12 @@ def main():
     # Calculate distances from camera
     for idx, point in enumerate(centerpoints):
         dists[idx,idx] = np.linalg.norm(point)
+        
+    t = time() - t
+    print(f'Total pipeline time: {t}')
     
     print(dists)
+    point_projector.visualize(totalrgb, totalXYZ, circle_points=centerpoints, axes=True)
     
     
 if __name__=='__main__':

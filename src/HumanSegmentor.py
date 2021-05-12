@@ -44,7 +44,9 @@ class resnetSegmentor(Segmentor):
         self.fcn = models.segmentation.fcn_resnet101(pretrained=True)
         
         if self.cuda:
-            self.fcn.cuda()
+            self.fcn = self.fcn.cuda()
+        else:
+            self.fcn = self.fcn.cpu()
         self.fcn.eval()
         
         # ImageNet normalization
@@ -65,6 +67,8 @@ class resnetSegmentor(Segmentor):
         
         if self.cuda:
             inp = inp.cuda()
+        else:
+            inp = inp.cpu()
         
         t = time()
         out = self.fcn(inp)['out']
