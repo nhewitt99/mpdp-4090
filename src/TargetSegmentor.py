@@ -27,8 +27,8 @@ class TargetSegmentor(Segmentor):
         frame = cv2.medianBlur(frame,5)
         cimg = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         #Change function based on camera resolution
-        circles = cv2.HoughCircles(cimg,cv2.HOUGH_GRADIENT,1,minDist=600,
-                                    param1=250,param2=40,minRadius=0,maxRadius=0)
+        circles = cv2.HoughCircles(cimg,method=cv2.HOUGH_GRADIENT, dp=2, 
+                            minDist=1000, param1=650, param2=65,minRadius=10, maxRadius=200)
         
         new_mask = np.zeros((cimg.shape), dtype=np.uint8)
         xy = []
