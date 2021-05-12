@@ -37,8 +37,14 @@ class EfficientHRNetSegmentor(Segmentor):
     
     
 class resnetSegmentor(Segmentor):
-    def __init__(self, image_shape, resize_to=256, prune_threshold=1000):
-        self.fcn = models.segmentation.fcn_resnet101(pretrained=True).eval()
+    def __init__(self, image_shape, resize_to=256, prune_threshold=1000, cuda=True):
+        self.cuda = cuda
+        self.fcn = models.segmentation.fcn_resnet101(pretrained=True)
+        
+        if self.cuda:
+            self.fcn.cuda()
+        self.fcn.eval()
+        
         # ImageNet normalization
         self.trf = T.Compose([T.Resize(resize_to),
                  #T.CenterCrop(224),
@@ -54,8 +60,17 @@ class resnetSegmentor(Segmentor):
     def segment(self, image):
         # Run net and get human pixels for small image
         inp = self.trf(image).unsqueeze(0)
+        
+        if self.cuda:
+            inp = inp.cuda()
+        
         out = self.fcn(inp)['out']
-        classes = np.array(torch.argmax(out.squeeze(), dim=0).detach().cpu().numpy())
+        
+        classes = torch.argmax(out.squeeze(), dim=0).detach()
+        if self.cuda:
+            classes = classes.cpu()
+        classes = classes.numpy()
+        
         humanpix = np.where(classes==15)
 
         # Resize up to 2d mask where humans are 1 and all else 0

@@ -33,17 +33,17 @@ def outlier_detection(points, thresh=2.0):
 
 
 def main():
-    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/4-5.jpg')
+    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/1-2-5.jpg')
     width, height = img.size
     
     calibration = pickle.load(open('src/calibration.pickle', 'rb'))
     camera_mtx = calibration['camera-matrix']
     
-    depth_estimator = Depthstimator((height, width))
+    depth_estimator = Depthstimator((height, width), cuda=True)
     
-    segmentor = resnetSegmentor((height, width))
+    segmentor = resnetSegmentor((height, width), cuda=True)
     # segmentor = EfficientHRNetSegmentor((height, width))
-    # segmentor = SamplingSegmentor((height, width), 0.125)
+    # segmentor = SamplingSegmentor((height, width), 0.25)
     
     point_projector = Projector(camera_mtx)
     
@@ -63,7 +63,7 @@ def main():
         # remaining_idx = np.where(z_outliers==1)
         
         # Naively select closest pixels to avoid the stretched ones
-        z_cutoff = np.percentile(XYZ[:,2], 80.0)
+        z_cutoff = np.percentile(XYZ[:,2], 25.0)
         remaining_idx = np.where(XYZ[:,2] < z_cutoff)
         XYZ = XYZ[remaining_idx]
         rgb = rgb[remaining_idx]
@@ -77,9 +77,10 @@ def main():
             
         # Find the object's average point
         thiscenter = np.mean(XYZ, axis=0)
+        thiscenter[1] = 0
         centerpoints.append(thiscenter)
         
-    point_projector.visualize(totalrgb, totalXYZ, centerpoints, axes=True)
+    point_projector.visualize(totalrgb, totalXYZ, circle_points=centerpoints, axes=True)
     
     # Calculate pairwise distances
     dists = scipy.spatial.distance.pdist(np.vstack(centerpoints))

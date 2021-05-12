@@ -9,8 +9,10 @@ This class' code draws heavily from FCRN's predict.py
 @author: nhewitt
 """
 
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import torch
+import torch.nn.parallel
+import torch.optim
+import torchvision.transforms as T
 
 from PIL import Image
 import numpy as np
@@ -20,58 +22,54 @@ from matplotlib import pyplot as plt
 
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__),
-                             os.pardir, 'FCRN-DepthPrediction', 'tensorflow'))
-import models
+                             os.pardir, 'fast-depth'))
 
 
 class Depthstimator:
     # image_shape: (height, width)
-    def __init__(self, image_shape, model_data_path = None):
+    def __init__(self, image_shape, ckpt_path = None, cuda = True):
         self.image_shape = image_shape
+        self.cuda = cuda
         
-        if model_data_path is None:
-            self.model_data_path = os.path.join(os.path.dirname(__file__),
-                                                os.pardir, 'FCRN-DepthPrediction',
-                                                'tensorflow', 'models', 'NYU_FCRN.ckpt')
+        if ckpt_path is None:
+            self.ckpt_path = os.path.join(os.path.dirname(__file__),
+                                                'cfg', 'mobilenet-nnconv5dw-skipadd-pruned.pth.tar')
         else:
-            self.model_data_path = model_data_path
+            self.ckpt_path = ckpt_path
         
         # Default input size
-        height = 228
-        width = 304
+        height = 224
+        width = 224
         self.input_shape = (height, width)
-        channels = 3
-        batch_size = 1
         
-        # Create a placeholder for the input image
-        self.input_node = tf.placeholder(tf.float32, shape=(None, height, width, channels))
-    
-        # Construct the network
-        self.net = models.ResNet50UpProj({'data': self.input_node}, batch_size, 1, False)
-        tf.get_variable_scope().reuse_variables()
+        # Load the network
+        checkpoint = torch.load(self.ckpt_path)
+        self.model = checkpoint['model']
+        self.model.eval()
         
-        self.sess = tf.Session()
+        if self.cuda:
+            self.model.cuda()
         
-        # Load the converted parameters
-        print('Loading the model')
-
-        # Use to load from ckpt file
-        saver = tf.train.Saver()     
-        saver.restore(self.sess, self.model_data_path)
+        # Create a transform for the input image
+        self.trf = T.Compose([T.Resize((224,224)),
+                        T.ToTensor()])
         
         
     def predict(self, img):
-        # Preprocess to net input size
-        img = np.array(img).astype('float32')
-        img = resize(img, self.input_shape)
-        img = np.expand_dims(np.asarray(img), axis = 0)
+        # Transform image to tensor    
+        inp = self.trf(img).unsqueeze(0)
+        if self.cuda:
+            inp = inp.cuda()
         
-        # Run net
-        pred = self.sess.run(self.net.get_output(), feed_dict={self.input_node: img})
-        pred = pred[0,:,:,0].squeeze()
+        # Run net and convert results to numpy
+        out = self.model(inp).detach()
+        if self.cuda:
+            out = out.cpu()
+        out = out.numpy()
+        out = out[0,0,:,:].squeeze()
         
         # Upscale
-        pred = resize(pred, self.image_shape)
+        pred = resize(out, self.image_shape)
         
         return pred
     
