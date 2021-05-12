@@ -24,6 +24,7 @@ from time import time
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__),
                              os.pardir, 'fast-depth'))
+print(sys.path)
 
 
 class Depthstimator:
@@ -44,7 +45,11 @@ class Depthstimator:
         self.input_shape = (height, width)
         
         # Load the network
-        checkpoint = torch.load(self.ckpt_path)
+        if self.cuda:
+            checkpoint = torch.load(self.ckpt_path)
+        else:
+            checkpoint = torch.load(self.ckpt_path, map_location=torch.device('cpu'))
+            
         self.model = checkpoint['model']
         self.model.eval()
         
