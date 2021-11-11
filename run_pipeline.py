@@ -12,9 +12,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from Depthstimator import Depthstimator
 from Segmentor import SamplingSegmentor
 from HumanSegmentor import EfficientHRNetSegmentor, ResnetSegmentor
-from TargetSegmentor import TargetSegmentor
 from Projector import Projector
-from FinalStage import DistancingFinalStage, TargetingFinalStage
+from FinalStage import DistancingFinalStage
 
 import pickle
 from PIL import Image
@@ -38,9 +37,9 @@ def outlier_detection(points, thresh=2.0):
 
 
 def main():
-    mode = 'Target'
+    mode = 'Distance'
     
-    img = Image.open('/home/nhewitt/Pictures/mpdp-imgs/target/2.jpg')
+    img = Image.open('mpdp-imgs/img.jpg')
     width, height = img.size
     
     calibration = pickle.load(open('src/calibration.pickle', 'rb'))
@@ -50,8 +49,6 @@ def main():
     
     if mode == 'Distance':
         segmentor = ResnetSegmentor((height, width), cuda=False)
-    elif mode == 'Target':
-        segmentor = TargetSegmentor((height, width))
     # segmentor = EfficientHRNetSegmentor((height, width))
     # segmentor = SamplingSegmentor((height, width), 0.25)
     
@@ -59,8 +56,6 @@ def main():
     
     if mode == 'Distance':
         final_stage = DistancingFinalStage()
-    elif mode == 'Target':
-        final_stage = TargetingFinalStage()
     
     t = time()
     

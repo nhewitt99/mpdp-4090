@@ -1,5 +1,5 @@
 # Multi-Purpose Depth Pipeline
-This repo contains the final project for ECGR 4090: Real-Time Machine Learning for Nathan Hewitt, Keith Chang, and Bradley Matheson. This represents a custom pipeline that has interchangeable components for multiple use cases. Depth estimation is performed on an image, while the image is segmented to identify either a round target or people. These results are then used to either aim a turret at a target, or calculate distances between people. 
+This repo contains the final project for ECGR 4090: Real-Time Machine Learning for Nathan Hewitt, Keith Chang, and Bradley Matheson. This represents a custom pipeline that has interchangeable components for multiple use cases. Depth estimation is performed on an image, while the image is segmented to identify either a round target or people. These results are then used to calculate distances between people. The codebase is designed to be modular, so that other algorithms can be used for depth estimation and segmentation.
 
 ## Required Packages
 This repo runs on Python 3.6. The required packages are found in requirements.txt
