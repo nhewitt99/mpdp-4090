@@ -142,13 +142,13 @@ class Projector:
         objects = []
         
         if axes:
-            frame = o3d.geometry.create_mesh_coordinate_frame(0.5)
+            frame = o3d.geometry.TriangleMesh.create_coordinate_frame(0.5)
             objects.append(frame)
             
         if circle_points is not None:
             i = 0
             for point in circle_points:
-                mesh_sphere = o3d.geometry.create_mesh_sphere(radius=0.1)
+                mesh_sphere = o3d.geometry.TriangleMesh.create_sphere(radius=0.1)
                 mesh_sphere.compute_vertex_normals()
                 mesh_sphere.paint_uniform_color(colors[i])
                 i += 1

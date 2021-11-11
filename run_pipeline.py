@@ -111,6 +111,7 @@ def main():
     t = time() - t
     print(f'Total pipeline time: {t}')
     
+    
     point_projector.visualize(totalrgb, totalXYZ, circle_points=centerpoints, axes=True)
     
     # img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)

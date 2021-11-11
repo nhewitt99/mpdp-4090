@@ -6,8 +6,8 @@ Segmentation phase wrapper for human segmentation
 @author: nhewitt, Keith Chang
 """
 
-from human_seg.EfficientSegNet.config import seg_cfg
-from human_seg.EfficientSegNet.EfficientSegmentation import EfficientSegNet
+# from human_seg.EfficientSegNet.config import seg_cfg
+# from human_seg.EfficientSegNet.EfficientSegmentation import EfficientSegNet
 from human_seg.segImplementation import SegImp
 
 import torchvision.models as models
